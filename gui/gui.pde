@@ -4,6 +4,8 @@ int clockStart, clockPrev;
 int nvids;
 int TIMEOUT = 59;
 
+String videos[];
+
 class Button {
   int x, y, xlen, ylen;
   String txt;
@@ -120,7 +122,9 @@ class CountdownScreen extends Screen {
 
 class RunningScreen extends Screen {
   void draw() {
-    text("Running...", 146, 155);
+    for (int i = 0; i < videos.length; i++)
+      text(i + ": " + videos[i], 10, 110 + 10*i);
+
     fill(0);   
   }
 }
@@ -165,8 +169,7 @@ void setup() {
 
   Button[] sButtons = new Button[2];
   sButtons[0] = new Button(m, m, l, l, "run", msevilla, 0);
-  sButtons[0] = new Button(m, m, l, l, "run", msevilla, 0);
-  sButtons[1] = new Button(m, m + sButtons[0].y + sButtons[0].ylen, l, l, "shuffle", rickmorty, 2);
+  sButtons[1] = new Button(m + sButtons[0].x + sButtons[0].xlen, m , l, l, "shuffle", rickmorty, 2);
   start = new PowerHourPhase(sButtons, new RunningScreen());
 
   m = 5;
@@ -175,6 +178,11 @@ void setup() {
   rButtons[0] = new Button(m, m, l, l, "cancel", msevilla, 1);
   rButtons[1] = new Button(width - m - l, m, l, l, "++time", rickmorty, 3);
   running = new PowerHourPhase(rButtons, new CountdownScreen());
+
+  // Read the list of links
+  videos = loadStrings("vids.txt");
+  if (videos == null)
+    exit();
 
   current = start;
   nvids = 0;
